@@ -78,6 +78,11 @@ var SlackAPI = function(bank){
 		    var receiver_id = cmd[2];
 		    var receiver_name = cmd[3];
 
+			if (giver_id === receiver_id && giver_name === receiver_name) {
+		    	res.send({ response_type: "ephemeral", text: "Sorry. That didn't work... You cannot give fk to yourself."})
+		    	return next()
+			}
+
 		    var comment = null
 		    if(cmd.length > 4){
 		    	comment = cmd[4]
