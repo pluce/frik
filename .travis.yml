@@ -6,7 +6,7 @@ services:
   - docker
 
 before_script:
-  - npm install mocha
+  - npm install
   - docker run --name mongo -d -p 27017:27017 mongo
 
 script:
