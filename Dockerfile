@@ -6,7 +6,7 @@ ADD . /usr/src/app
 
 WORKDIR /usr/src/app
 
-RUN npm install
+RUN npm install --production
 
 EXPOSE 8080
 CMD [ "npm", "start" ]

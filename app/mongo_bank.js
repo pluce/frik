@@ -61,7 +61,7 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 			console.log(format("Creating account %s / %s",realm_id, account_id))
 			var default_balance = 1000
 			var key = _account_key(realm_id,account_id)
-			var acc_new = new Account({ realm_id: realm_id, account_id: account_id, holder_name: acc.holder_name, balance: default_balance})
+			var acc_new = new Account({ realm_id: realm_id, account_id: account_id, holder_name: acc.holder_name, balance: acc.balance || default_balance})
 			return Q.Promise(function(resolve,reject){
 				client
 				.then(function(db){
