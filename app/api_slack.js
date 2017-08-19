@@ -2,7 +2,9 @@ var format = require('util').format
 var logger = require('./logger')
 var Account = require('./account.js')
 var request = require('request')
-var SlackAPI = function(bank){
+var errs = require('restify-errors');
+
+var SlackAPI = function(bank,slack_token){
 	return {
 		debug: function(req,res,next){
 			logger.info(" >> DEBUG ENDPOINT")
@@ -136,7 +138,16 @@ var SlackAPI = function(bank){
 		    	res.send(new Error(error))
 		    	return next()
 		    })
-		}
+		},
+    verify: function(req,res,next){
+      var e = req.body
+      if(slack_token && e.token != slack_token) {
+        logger.info("Someone tried to used wrong token: %s",e.token)
+        res.send(new errs.UnauthorizedError())
+      } else {
+        next()
+      }
+    }
 	}
 }
 

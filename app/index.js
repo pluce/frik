@@ -6,10 +6,12 @@ var restify = require('restify')
 
 var server = restify.createServer()
 server.use(restify.plugins.bodyParser());
-var SlackAPI = require('./api_slack.js')(Bank)
-server.post('/slack-api/bank', SlackAPI.bank)
-server.post('/slack-api/pay', SlackAPI.pay)
-server.post('/slack-api/forbes', SlackAPI.forbes)
+
+var SlackAPI = require('./api_slack.js')(Bank,process.env.SLACK_TOKEN)
+
+server.post('/slack-api/bank', SlackAPI.verify, SlackAPI.bank)
+server.post('/slack-api/pay', SlackAPI.verify, SlackAPI.pay)
+server.post('/slack-api/forbes', SlackAPI.verify, SlackAPI.forbes)
 server.post('/slack-api/debug', SlackAPI.debug)
 
 server.listen(3000, function() {
