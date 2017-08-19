@@ -130,6 +130,18 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 					}
 				})
 				.then(function(res){
+					return _db.collection('transactions').insert({
+						emitter_id: emitKey,
+						receiver_id: recvKey,
+						emitter_name: emitter.holder_name,
+						receiver_name: receiver.holder_name,
+						amount: amount,
+						date: new Date()
+					}).then(function(res){
+						return res.result
+					})
+				})
+				.then(function(res){
 					resolve(res)
 				})
 				.catch(reject)
