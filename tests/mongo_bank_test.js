@@ -113,6 +113,40 @@ describe('Mongo Bank', function() {
     });
   }); 
 
+  describe('transfer command',function(){
+    it('should allow transfer between funded accounts',function(done){
+      var bank = bank_builder();
+      var a,b;
+      Q.all([
+        bank.createAccount(new Account({ "realm_id": 123, "account_id": "AA", "balance": 1000.0})),
+        bank.createAccount(new Account({ "realm_id": 123, "account_id": "BB", "balance": 1000.0}))
+        ])
+      .then(function(accounts){
+        a = accounts[0]
+        b = accounts[1]
+        return bank.transfer(a,b,500.0)
+      })
+      .then(function(){
+        return bank.loadAccount(a)
+      })
+      .then(function(result){
+        expect(result.account_id).to.equal("AA")
+        expect(result.balance).to.equal(500.0)
+        return bank.loadAccount(b)
+      })
+      .then(function(result){
+        expect(result.account_id).to.equal("BB")
+        expect(result.balance).to.equal(1500.0)
+        return db.collection('transactions').count()
+      })
+      .then(function(result){
+        expect(result).to.equal(1)
+        done()
+      })
+      .catch(console.log)
+    })
+  });
+
   describe('top10 command', function(){
     it('should return empty array when no account', function(done) {
       var bank = bank_builder();
