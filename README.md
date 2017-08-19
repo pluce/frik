@@ -11,6 +11,12 @@ Needs a Mongo database. Using docker, link name is "mongo" and port 27017.
 * Deploy this somewhere accessible from outside. Docker will help a LOT, Dockerfile is provided and also build script for GKE / Kubernetes.
 * Configure your Slack app commands to use it.
 
+## Environment variables
+
+* `MONGO_ADDR` sets the mongo host name, default to `mongo`
+* `LOG_LEVEL` sets the log level (uahey), default to `debug`
+* 'SLACK_TOKEN' sets the Slack slash-commands verification token, default to `null` and no check.
+
 ## Concepts
 A "realm" is an abstraction for a team / world / organization.
 An "account" is a wallet.
