@@ -1,5 +1,6 @@
 # frik
 A slack app to exchange virtual money
+
 [![Build Status](https://travis-ci.org/pluce/frik.svg?branch=master)](https://travis-ci.org/pluce/frik)
 
 ## Dependencies
