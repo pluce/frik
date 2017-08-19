@@ -15,7 +15,7 @@ Needs a Mongo database. Using docker, link name is "mongo" and port 27017.
 
 * `MONGO_ADDR` sets the mongo host name, default to `mongo`
 * `LOG_LEVEL` sets the log level (uahey), default to `debug`
-* 'SLACK_TOKEN' sets the Slack slash-commands verification token, default to `null` and no check.
+* `SLACK_TOKEN` sets the Slack slash-commands verification token, default to `null` and no check.
 
 ## Concepts
 A "realm" is an abstraction for a team / world / organization.
