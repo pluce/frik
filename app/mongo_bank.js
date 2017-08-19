@@ -97,7 +97,7 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 					return _db.collection('accounts').findOne({ _id: emitKey })
 				})
 				.then(function(emitterDoc){
-					if(emitterDoc.balance >= amount) {
+					if(emitterDoc.balance >= amount) {
 						return _db.collection('accounts').updateOne(
 							{
 								_id: emitKey,
@@ -113,7 +113,7 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 				})
 				.then(function(res){
 					console.log(res.result)
-					if(res.result.nModified == 0){
+					if(res.result.nModified === 0){
 						return _self.transfer(emitter,receiver,amount)
 					} else {
 						return _db.collection('accounts').updateOne(

@@ -62,7 +62,7 @@ var SlackAPI = function(bank){
 
 		    var cmd = e.text.match(msg_regex);
 			
-			if(cmd == null){
+			if(cmd === null){
 		    	res.send(new Error("Syntax error"))
 		    	return next()
 		    }
@@ -71,7 +71,7 @@ var SlackAPI = function(bank){
 		    var giver_id = e.user_id;
 		    var giver_name = e.user_name;
 		    var amount = parseInt(cmd[1]);
-		    if(amount == NaN || amount < 0) {
+		    if(isNaN(amount) || amount < 0) {
 		    	res.send(new Error("Bad amount"))
 		    	return next()
 		    }
@@ -103,7 +103,7 @@ var SlackAPI = function(bank){
 			.then(function(result){
 				//res.send({ response_type: "in_channel", text: format('%s gives %s fk to %s',giver_name,amount,receiver_name) })
 				res.send(200)
-				return request({
+				request({
 					uri: e.response_url,
 					method: 'POST',
 					json: true,
