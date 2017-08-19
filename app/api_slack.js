@@ -1,13 +1,14 @@
 var format = require('util').format
+var logger = require('./logger')
 var Account = require('./account.js')
 var request = require('request')
 var SlackAPI = function(bank){
 	return {
 		debug: function(req,res,next){
-			console.log(" >> DEBUG ENDPOINT")
-			console.log(" >> ",req.params)
-			console.log(" >> ",req.body)
-			console.log(" << DEBUG ENDPOINT")
+			logger.info(" >> DEBUG ENDPOINT")
+			logger.info(" >> ",req.params)
+			logger.info(" >> ",req.body)
+			logger.info(" << DEBUG ENDPOINT")
 			return next()
 		},
 		forbes: function(req,res,next){
@@ -27,10 +28,12 @@ var SlackAPI = function(bank){
 		    })
 		    .fail(function(reason){
 		    	res.send(new Error(reason))
+          logger.warn(reason)
 		    	return next()
 		    })
 		    .catch(function(error){
 		    	res.send(new Error(error))
+          logger.error(error)
 		    	return next()
 		    })
 		},
@@ -48,10 +51,12 @@ var SlackAPI = function(bank){
 		    })
 		    .fail(function(reason){
 		    	res.send(new Error(reason))
+          logger.warn(reason)
 		    	return next()
 		    })
 		    .catch(function(error){
 		    	res.send(new Error(error))
+          logger.error(error)
 		    	return next()
 		    })
 		},
@@ -117,17 +122,17 @@ var SlackAPI = function(bank){
 					    ]
 					}
 				},function(result){
-					console.log("Callback URL called successfully: "+result)
+					logger.debug("Callback URL called successfully: "+result)
 				})
 				return next();
 			})
 		    .fail(function(reason){
-				console.log("Payment failed: "+reason)
+          logger.warn(reason)
 		    	res.send({ response_type: "ephemeral", text: "You don't have enough money for this."})
 		    	return next()
 		    })
 		    .catch(function(error){
-				console.log("Error: "+error)
+          logger.error(error)
 		    	res.send(new Error(error))
 		    	return next()
 		    })

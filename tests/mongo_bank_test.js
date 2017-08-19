@@ -1,6 +1,9 @@
 var chai = require('chai')
 var expect = chai.expect
 var should = chai.should()
+var logger = require('../app/logger')
+
+logger.level = 'warn'
 
 var MongoClient = require('mongodb').MongoClient
 var util = require('util')
@@ -142,7 +145,6 @@ describe('Mongo Bank', function() {
       .then(function(result){
         should.exist(result)
         expect(result.length).to.equal(10)
-        console.log(result)
         expect(result[0].account_id).to.equal(10)
         expect(result[2].account_id).to.equal(30)
         expect(result[9].account_id).to.equal(100)
@@ -176,7 +178,6 @@ describe('Mongo Bank', function() {
       .then(function(result){
         should.exist(result)
         expect(result.length).to.equal(10)
-        console.log(result)
         expect(result[0].account_id).to.equal(10)
         expect(result[2].account_id).to.equal(30)
         expect(result[9].account_id).to.equal(100)

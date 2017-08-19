@@ -1,4 +1,6 @@
 var format = require('util').format
+var logger = require('./logger')
+
 var Account = require('./account.js')
 
 var Q = require('q')
@@ -11,7 +13,9 @@ var _account_key = function(realm_id, account_id){
 var Bank = function(mongo_host, mongo_port, mongo_db){
 	
 	var url = format("mongodb://%s:%s/%s", mongo_host, mongo_port, mongo_db)
-	var client = MongoClient.connect(url)
+	var client = MongoClient.connect(url).catch(function(err){
+		logger.error("Cannot connect to Mongo, will exit.")
+	})
 
 	return {
 		// Return a Promise for an account
@@ -19,7 +23,7 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 			var realm_id = acc.realm_id
 			var account_id = acc.account_id
 			var _self = this
-			console.log(format("Loading account %s / %s",realm_id, account_id))
+			logger.debug("Loading account %s / %s",realm_id, account_id)
 			var key = _account_key(realm_id,account_id)
 			return Q.Promise(function(resolve,reject){
 				client
@@ -30,21 +34,19 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 					if(result) {
 						resolve(new Account(result))
 					} else {
-						console.log("should create")
+						logger.debug("Does not exist, should be created")
 						_self.createAccount(acc)
 						.then(function(result){
 							resolve(result)
 						})
 					}
 				})
-				.catch(function(error){
-					console.log("Error",error)
-				})
+				.catch(reject)
 			})
 		},
 		top10: function(realm_id){
 			var _self = this
-			console.log(format("Getting TOP 10 for realm %s",realm_id))
+			logger.debug("Getting TOP 10 for realm %s",realm_id)
 			return Q.Promise(function(resolve,reject){
 				client
 				.then(function(db){
@@ -58,7 +60,7 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 			var realm_id = acc.realm_id
 			var account_id = acc.account_id
 			var _self = this
-			console.log(format("Creating account %s / %s",realm_id, account_id))
+			logger.debug("Creating account %s / %s",realm_id, account_id)
 			var default_balance = 1000
 			var key = _account_key(realm_id,account_id)
 			var acc_new = new Account({ realm_id: realm_id, account_id: account_id, holder_name: acc.holder_name, balance: acc.balance || default_balance})
@@ -76,7 +78,7 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 				})
 				.then(function(res){
 					if( !res.result.upserted ) {
-						console.log("Was inserted before me")
+						logger.debug("Was inserted before me")
 					}
 					_self.loadAccount(acc_new).then(resolve).catch(reject)
 				})
@@ -86,7 +88,7 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 		},
 		transfer: function(emitter,receiver,amount){
 			var _self = this		
-			console.log(format("Transfering %s fk from account %s / %s to account %s / %s",amount,emitter.realm_id,emitter.account_id,receiver.realm_id,receiver.account_id))
+			logger.debug("Transfering %s fk from account %s / %s to account %s / %s",amount,emitter.realm_id,emitter.account_id,receiver.realm_id,receiver.account_id)
 			return Q.Promise(function(resolve,reject){
 				var emitKey = _account_key(emitter.realm_id,emitter.account_id)
 				var recvKey = _account_key(receiver.realm_id,receiver.account_id)
@@ -112,7 +114,6 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 					}
 				})
 				.then(function(res){
-					console.log(res.result)
 					if(res.result.nModified === 0){
 						return _self.transfer(emitter,receiver,amount)
 					} else {
