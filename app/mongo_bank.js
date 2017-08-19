@@ -14,7 +14,7 @@ var Bank = function(mongo_host, mongo_port, mongo_db){
 	
 	var url = format("mongodb://%s:%s/%s", mongo_host, mongo_port, mongo_db)
 	var client = MongoClient.connect(url).catch(function(err){
-		logger.error("Cannot connect to Mongo, will exit.")
+		logger.error("Cannot connect to Mongo, will exit.",err)
 	})
 
 	return {

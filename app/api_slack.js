@@ -141,11 +141,11 @@ var SlackAPI = function(bank,slack_token){
 		},
     verify: function(req,res,next){
       var e = req.body
-      if(slack_token && e.token != slack_token) {
+      if(slack_token && e.token !== slack_token) {
         logger.info("Someone tried to used wrong token: %s",e.token)
-        res.send(new errs.UnauthorizedError())
+        return next(new errs.UnauthorizedError())
       } else {
-        next()
+        return next()
       }
     }
 	}
